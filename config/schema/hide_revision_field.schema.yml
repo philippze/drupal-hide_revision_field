@@ -1,0 +1,7 @@
+node.type.*.third_party.hide_revision_field:
+  type: mapping
+  label: 'Hide Revision Field'
+  mapping:
+    hide:
+      type: boolean
+      label: 'Whether to enable the reusable forms on this node type'
