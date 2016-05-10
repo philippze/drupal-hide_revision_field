@@ -1,0 +1,45 @@
+<?php
+
+/**
+ * @file hide_revision_field.module
+ * Manages hiding revision information fields on Media edit/create forms.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\media_entity\MediaBundle;
+use Drupal\media_entity\MediaBundleInterface;
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Alter media bundle forms to add checkbox to control visibility of revision
+ * information per media bundle.
+ */
+function hide_revision_field_media_entity_form_media_bundle_form_alter(&$form, FormStateInterface $form_state) {
+  $form['hide_revision_field'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Hide Revision Dialogue'),
+    '#default' => $form_state->getFormObject()->getEntity()->getThirdPartySetting('hide_revision_field', 'hide', 0),
+  ];
+
+  $form['#entity_builders'][] = 'hide_revision_field_media_entity_form_media_bundle_form_builder';
+}
+
+/**
+ * Entity form builder for media bundle forms to save value to 3rd party settings.
+ */
+function hide_revision_field_media_entity_form_media_bundle_form_builder($entity_type, MediaBundleInterface $type, &$form, FormStateInterface $form_state) {
+  $type->setThirdPartySetting('hide_revision_field', 'hide', $form_state->getValue('hide_revision_field'));
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Manages the actual hiding of the revision information fields if required.
+ */
+function hide_revision_field_media_entity_form_media_form_alter(&$form, FormStateInterface $form_state) {
+  $bundle = entity_load('media_bundle', $form_state->getFormObject()->getEntity()->bundle());
+  if ($bundle->getThirdPartySetting('hide_revision_field', 'hide')) {
+    $form['revision_information']['#access'] = FALSE;
+  }
+}
