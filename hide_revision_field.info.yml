@@ -1,7 +1,5 @@
 name: 'Hide Revision Field'
 type: module
 description: 'Controls visibility of the revision field on content add/edit forms.'
-dependencies:
-  - node
 package: Forms
 core: 8.x
