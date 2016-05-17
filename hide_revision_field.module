@@ -2,44 +2,50 @@
 
 /**
  * @file hide_revision_field.module
- * Manages hiding revision information fields on Node edit/create forms.
+ * Manages hiding revision information fields on revisionable entities
+ * (ie Node or Media) edit/create forms.
  */
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\node\Entity\NodeType;
-use Drupal\node\NodeTypeInterface;
+use Drupal\Core\Config\Entity\ConfigEntityInterface;
 
 /**
- * Implements hook_form_FORM_ID_alter().
+ * Implements hook_form_alter().
  *
- * Alter node type forms to add checkbox to control visibility of revision
- * information per node type.
+ * Alter entity bundle forms to add checkbox to control visibility of revision
+ * information fields per bundle.
+ * Also alter entity create/edit forms to disable the visibility of revision
+ * information field if it is disabled for the bundle.
  */
-function hide_revision_field_form_node_type_form_alter(&$form, FormStateInterface $form_state) {
-  $form['workflow']['hide_revision_field'] = [
-    '#type' => 'checkbox',
-    '#title' => t('Hide Revision Dialogue'),
-    '#default' => $form_state->getFormObject()->getEntity()->getThirdPartySetting('hide_revision_field', 'hide', 0),
-  ];
+function hide_revision_field_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if (in_array($form_id, ['node_type_edit_form', 'media_bundle_edit_form'])) {
+    $form['workflow']['hide_revision_field'] = [
+      '#type' => 'checkbox',
+      '#title' => t('Hide Revision Dialogue'),
+      '#default' => $form_state->getFormObject()->getEntity()->getThirdPartySetting('hide_revision_field', 'hide', 0),
+    ];
 
-  $form['#entity_builders'][] = 'hide_revision_field_form_node_type_form_builder';
-}
-
-/**
- * Entity form builder for node type forms to save value to 3rd party settings.
- */
-function hide_revision_field_form_node_type_form_builder($entity_type, NodeTypeInterface $type, &$form, FormStateInterface $form_state) {
-  $type->setThirdPartySetting('hide_revision_field', 'hide', $form_state->getValue('hide_revision_field'));
-}
-
-/**
- * Implements hook_form_FORM_ID_alter().
- *
- * Manages the actual hiding of the revision information fields if required.
- */
-function hide_revision_field_form_node_form_alter(&$form, FormStateInterface $form_state) {
-  $node_type = NodeType::load($form_state->getFormObject()->getEntity()->bundle());
-  if ($node_type->getThirdPartySetting('hide_revision_field', 'hide')) {
-    $form['revision_information']['#access'] = FALSE;
+    $form['#entity_builders'][] = 'hide_revision_field_bundle_builder';
   }
+  if (in_array($form_state->getBuildInfo()['base_form_id'], ['node_form', 'media_form'])) {
+    switch($form_state->getBuildInfo()['base_form_id']) {
+      case 'node_form':
+        $type = 'node_type';
+        break;
+      case 'media_form':
+        $type = 'media_bundle';
+        break;
+    }
+    $bundle = entity_load($type, $form_state->getFormObject()->getEntity()->bundle());
+    if ($bundle->getThirdPartySetting('hide_revision_field', 'hide')) {
+      $form['revision_information']['#access'] = FALSE;
+    }
+  }
+}
+
+/**
+ * Entity form builder for bundle forms to save value to 3rd party settings.
+ */
+function hide_revision_field_bundle_builder($entity_type, ConfigEntityInterface $type, &$form, FormStateInterface $form_state) {
+  $type->setThirdPartySetting('hide_revision_field', 'hide', $form_state->getValue('hide_revision_field'));
 }
