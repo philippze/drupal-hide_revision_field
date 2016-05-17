@@ -27,8 +27,9 @@ function hide_revision_field_form_alter(&$form, FormStateInterface $form_state, 
 
     $form['#entity_builders'][] = 'hide_revision_field_bundle_builder';
   }
-  if (in_array($form_state->getBuildInfo()['base_form_id'], ['node_form', 'media_form'])) {
-    switch($form_state->getBuildInfo()['base_form_id']) {
+  $info = $form_state->getBuildInfo();
+  if (isset($info['base_form_id']) && in_array($info['base_form_id'], ['node_form', 'media_form'])) {
+    switch($info['base_form_id']) {
       case 'node_form':
         $type = 'node_type';
         break;
