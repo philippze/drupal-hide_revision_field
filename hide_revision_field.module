@@ -22,7 +22,7 @@ function hide_revision_field_form_alter(&$form, FormStateInterface $form_state, 
     $form['workflow']['hide_revision_field'] = [
       '#type' => 'checkbox',
       '#title' => t('Hide Revision Dialogue'),
-      '#default' => $form_state->getFormObject()->getEntity()->getThirdPartySetting('hide_revision_field', 'hide', 0),
+      '#default_value' => $form_state->getFormObject()->getEntity()->getThirdPartySetting('hide_revision_field', 'hide', 0),
     ];
 
     $form['#entity_builders'][] = 'hide_revision_field_bundle_builder';
