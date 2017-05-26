@@ -10,7 +10,7 @@ node.type.*.third_party.hide_revision_field:
       label: 'Whether to enable users to personalize this setting (via their user page).'
     personalization:
       type: sequence
-      label: 'User specific personalization of revision vield visibiity.'
+      label: 'User specific personalization of revision field visibility.'
       sequence:
         type: mapping
         mapping:
@@ -29,7 +29,7 @@ media_entity.bundle.*.third_party.hide_revision_field:
       label: 'Whether to enable users to personalize this setting (via their user page).'
     personalization:
       type: sequence
-      label: 'User specific personalization of revision vield visibiity.'
+      label: 'User specific personalization of revision field visibility.'
       sequence:
         type: mapping
         mapping:
