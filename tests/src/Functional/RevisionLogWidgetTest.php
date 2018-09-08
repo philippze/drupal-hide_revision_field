@@ -1,15 +1,13 @@
 <?php
 
-namespace Drupal\Tests\hide_revision_widget\Functional;
+namespace Drupal\Tests\hide_revision_field\Functional;
 
-use Drupal\Component\Render\FormattableMarkup;
-use Drupal\filter\Entity\FilterFormat;
 use Drupal\Tests\BrowserTestBase;
 
 /**
- * Tests form elements with associated text formats.
+ * Test hide_revision_field_log_widget.
  *
- * @group filter
+ * @group hide_revision_field
  */
 class RevisionLogWidgetTest extends BrowserTestBase {
 
@@ -25,7 +23,7 @@ class RevisionLogWidgetTest extends BrowserTestBase {
   ];
 
   /**
-   * An user account with full permission for revision log fields
+   * An user account with full permission for revision log fields.
    *
    * @var \Drupal\user\Entity\User
    */
@@ -59,7 +57,7 @@ class RevisionLogWidgetTest extends BrowserTestBase {
       'access revision field',
     ]);
     $this->webUser = $this->drupalCreateUser([
-      'bypass node access'
+      'bypass node access',
     ]);
 
     $this->drupalCreateContentType([
@@ -72,15 +70,15 @@ class RevisionLogWidgetTest extends BrowserTestBase {
   }
 
   /**
-   * Tests the behavior of the 'text_format' element as an administrator.
-   *//*
+   * Tests the behavior of the 'hide_revision_field_log_widget' widget.
+   */
   public function testWidget() {
     $this->drupalLogin($this->webUser);
     $this->drupalGet('node/add/article');
 
     $session = $this->assertSession();
 
-    // Confirm field visible with default options
+    // Confirm field visible with default options.
     $session->fieldExists('revision_log[0][value]');
     $session->fieldValueEquals('revision_log[0][value]', '');
 
@@ -114,7 +112,7 @@ class RevisionLogWidgetTest extends BrowserTestBase {
     $session->fieldValueEquals('revision_log[0][value]', 'A new log message');
 
   }
-*/
+
   /**
    * Test User personalization.
    */
@@ -125,7 +123,6 @@ class RevisionLogWidgetTest extends BrowserTestBase {
     $session = $this->assertSession();
     $session->fieldNotExists('hide_revision_field[node][article]');
     $session->pageTextNotContains('Revision Field Settings');
-
 
     $this->drupalLogin($this->adminUser);
     $this->drupalGet("user/{$this->adminUser->id()}/edit");
@@ -153,6 +150,6 @@ class RevisionLogWidgetTest extends BrowserTestBase {
     $this->drupalGet("user/{$this->adminUser->id()}/edit");
     $session->fieldNotExists('hide_revision_field[node][article]');
     $session->pageTextNotContains('Revision Field Settings');
-
   }
+
 }

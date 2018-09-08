@@ -5,16 +5,14 @@ namespace Drupal\hide_revision_field\Plugin\Field\FieldWidget;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\Plugin\Field\FieldWidget\StringTextareaWidget;
-use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountProxy;
 use Drupal\user\Entity\User;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-
 /**
- * Plugin implementation of the 'string_textarea' widget.
+ * Plugin implementation of the 'hide_revision_field_log_widget' widget.
  *
  * @FieldWidget(
  *   id = "hide_revision_field_log_widget",
@@ -28,6 +26,21 @@ class RevisionLogWidget extends StringTextareaWidget implements ContainerFactory
 
   protected $user;
 
+  /**
+   * Create the widget instance.
+   *
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+   *   The symfony container.
+   * @param array $configuration
+   *   The plugin configuration
+   * @param string $plugin_id
+   *   The the plugin id
+   * @param mixed $plugin_definition
+   *   The plugin definition.
+   *
+   * @return \Drupal\Core\Plugin\ContainerFactoryPluginInterface|\Drupal\hide_revision_field\Plugin\Field\FieldWidget\RevisionLogWidget
+   *   The widget.
+   */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
       $plugin_id,
@@ -53,6 +66,7 @@ class RevisionLogWidget extends StringTextareaWidget implements ContainerFactory
    * @param array $third_party_settings
    *   Any third party settings.
    * @param \Drupal\Core\Session\AccountProxy $user
+   *   The current user.
    */
   public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, AccountProxy $user) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
@@ -81,7 +95,7 @@ class RevisionLogWidget extends StringTextareaWidget implements ContainerFactory
       '#type' => 'checkbox',
       '#title' => t('Show'),
       '#default_value' => $settings['show'],
-      '#description' => $this->t('Show field by default.')
+      '#description' => $this->t('Show field by default.'),
     ];
     $element['allow_user_settings'] = [
       '#type' => 'checkbox',

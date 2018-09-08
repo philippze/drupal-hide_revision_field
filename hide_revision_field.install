@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Install, update and uninstall functions for Hide Revision Field.
@@ -9,6 +10,27 @@ use Drupal\user\RoleInterface;
 /**
  * Implements hook_install().
  */
-function hide_revision_field_install() {
-  user_role_grant_permissions(RoleInterface::ANONYMOUS_ID, array('view revision field'));
+function hide_revision_field_update_8201() {
+  $entity_type_manager = \Drupal::entityTypeManager();
+  foreach(['node_type', 'media_bundle'] as $type) {
+    if (!$entity_type_manager->hasDefinition($type)) {
+      continue;
+    }
+    /** @var \Drupal\Core\Config\Entity\ConfigEntityInterface $bundle */
+    foreach ($entity_type_manager->getStorage($type)->loadMultiple() as $bundle) {
+      $type = $bundle->getEntityType();
+      $bundle_id = $bundle->id();
+      $entity_type_manager->getStorage('entity_form_display')
+        ->load('node.article.default')
+        ->setComponent('revision_log', [
+          'type' => 'hide_revision_field_log_widget',
+          'settings' => [
+            'show' => !$bundle->getThirdPartySetting('hide_revision_field', 'hide', FALSE),
+          ],
+        ])->save();
+      $bundle->unsetThirdPartySetting('hide_revision_field', 'hide');
+      $bundle->unsetThirdPartySetting('hide_revision_field', 'personalizable');
+    }
+  }
+  user_role_revoke_permissions(RoleInterface::ANONYMOUS_ID, ['view revision field']);
 }

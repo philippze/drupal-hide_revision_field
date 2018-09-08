@@ -1,7 +1,7 @@
 {
   "name": "drupal/hide_revision_field",
   "require": {
-    "drupal/core": "~8.0"
+    "drupal/core": "~8.3"
   },
   "type": "drupal-module",
   "license": [
@@ -13,7 +13,7 @@
       "homepage": "https://www.drupal.org/user/3094661"
     }
   ],
-  "description": "Controls visibility of the revision field on content add/edit forms.",
+  "description": "Controls visibility of the revision field on entity add/edit forms.",
   "homepage": "https://www.drupal.org/project/hide_revision_field",
   "support": {
     "source": "http://cgit.drupalcode.org/hide_revision_field"

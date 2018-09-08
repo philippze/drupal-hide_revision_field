@@ -1,9 +1,8 @@
 <?php
 
 /**
- * @file hide_revision_field.module
- * Manages hiding revision information fields on revisionable entities
- * (ie Node or Media) edit/create forms.
+ * @file
+ * Manage hiding revision log field on revisionable entity edit/create forms.
  */
 
 use Drupal\Core\Field\BaseFieldDefinition;
