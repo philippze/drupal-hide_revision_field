@@ -12,7 +12,7 @@ use Drupal\user\RoleInterface;
  */
 function hide_revision_field_update_8201() {
   $entity_type_manager = \Drupal::entityTypeManager();
-  foreach(['node_type', 'media_bundle'] as $type) {
+  foreach (['node_type', 'media_bundle'] as $type) {
     if (!$entity_type_manager->hasDefinition($type)) {
       continue;
     }

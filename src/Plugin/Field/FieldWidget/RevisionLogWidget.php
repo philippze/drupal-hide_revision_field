@@ -32,9 +32,9 @@ class RevisionLogWidget extends StringTextareaWidget implements ContainerFactory
    * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
    *   The symfony container.
    * @param array $configuration
-   *   The plugin configuration
+   *   The plugin configuration.
    * @param string $plugin_id
-   *   The the plugin id
+   *   The the plugin id.
    * @param mixed $plugin_definition
    *   The plugin definition.
    *
