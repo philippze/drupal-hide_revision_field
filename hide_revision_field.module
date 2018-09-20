@@ -102,6 +102,7 @@ function hide_revision_field_entity_base_field_info_alter(&$fields, EntityTypeIn
     $field->setDisplayConfigurable('form', TRUE)
       ->setDisplayOptions('form', [
         'type' => 'hide_revision_field_log_widget',
+        'weight' => 80,
       ]);
   }
 }
