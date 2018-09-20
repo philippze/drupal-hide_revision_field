@@ -8,9 +8,25 @@
 use Drupal\user\RoleInterface;
 
 /**
+ * Implements HOOK_install().
+ */
+function hide_revision_field_install() {
+  module_set_weight('hide_revision_field', 1);
+}
+
+/**
+ * Set revision field weight
+ */
+function hide_revision_field_update_8203() {
+  module_set_weight('hide_revision_field', 1);
+}
+
+/**
  * Update settings.
  */
 function hide_revision_field_update_8201() {
+  drupal_flush_all_caches();
+  \Drupal::entityDefinitionUpdateManager()->applyUpdates();
   $entity_type_manager = \Drupal::entityTypeManager();
   foreach (['node_type', 'media_bundle'] as $type) {
     if (!$entity_type_manager->hasDefinition($type)) {
