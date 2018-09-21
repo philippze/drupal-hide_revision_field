@@ -171,11 +171,17 @@ class RevisionLogWidget extends StringTextareaWidget implements ContainerFactory
 
     // Check for user level personalization.
     if ($settings['allow_user_settings'] && $this->user->hasPermission('administer revision field personalization')) {
-      /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
-      $entity = $form_state->getFormObject()->getEntity();
-      $user_settings = unserialize(User::load($this->user->id())->get('revision_log_settings')->value);
-      if (isset($user_settings[$entity->getEntityType()->id()][$entity->bundle()])) {
-        $show = $user_settings[$entity->getEntityType()->id()][$entity->bundle()];
+      $form_object = $form_state->getFormObject();
+      if (method_exists($form_object, 'getEntity')) {
+        /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
+        $entity = $form_object->getEntity();
+        $user_settings = unserialize(User::load($this->user->id())
+          ->get('revision_log_settings')->value);
+        if (isset($user_settings[$entity->getEntityType()
+            ->id()][$entity->bundle()])) {
+          $show = $user_settings[$entity->getEntityType()
+            ->id()][$entity->bundle()];
+        }
       }
     }
 
