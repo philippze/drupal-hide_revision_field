@@ -7,7 +7,7 @@ use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\Plugin\Field\FieldWidget\StringTextareaWidget;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\Core\Session\AccountProxy;
+use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\user\Entity\User;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -65,10 +65,10 @@ class RevisionLogWidget extends StringTextareaWidget implements ContainerFactory
    *   The widget settings.
    * @param array $third_party_settings
    *   Any third party settings.
-   * @param \Drupal\Core\Session\AccountProxy $user
+   * @param \Drupal\Core\Session\AccountProxyInterface $user
    *   The current user.
    */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, AccountProxy $user) {
+  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, AccountProxyInterface $user) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
     $this->user = $user;
   }
@@ -178,7 +178,7 @@ class RevisionLogWidget extends StringTextareaWidget implements ContainerFactory
         $user_settings = unserialize(User::load($this->user->id())
           ->get('revision_log_settings')->value);
         if (isset($user_settings[$entity->getEntityType()
-            ->id()][$entity->bundle()])) {
+          ->id()][$entity->bundle()])) {
           $show = $user_settings[$entity->getEntityType()
             ->id()][$entity->bundle()];
         }
