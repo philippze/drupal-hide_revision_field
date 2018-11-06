@@ -15,7 +15,7 @@ function hide_revision_field_install() {
 }
 
 /**
- * Set revision field weight
+ * Set revision field weight.
  */
 function hide_revision_field_update_8203() {
   module_set_weight('hide_revision_field', 1);
@@ -28,16 +28,18 @@ function hide_revision_field_update_8201() {
   drupal_flush_all_caches();
   \Drupal::entityDefinitionUpdateManager()->applyUpdates();
   $entity_type_manager = \Drupal::entityTypeManager();
-  foreach (['node_type', 'media_bundle'] as $type) {
+  $types = [
+    'node_type' => 'node',
+    'media_bundle' => 'media',
+  ];
+  foreach ($types as $type => $type_id) {
     if (!$entity_type_manager->hasDefinition($type)) {
       continue;
     }
     /** @var \Drupal\Core\Config\Entity\ConfigEntityInterface $bundle */
-    foreach ($entity_type_manager->getStorage($type)->loadMultiple() as $bundle) {
-      $type = $bundle->getEntityType();
-      $bundle_id = $bundle->id();
+    foreach ($entity_type_manager->getStorage($type)->loadMultiple() as $k => $bundle) {
       $entity_type_manager->getStorage('entity_form_display')
-        ->load('node.article.default')
+        ->load("{$type_id}.{$k}.default")
         ->setComponent('revision_log', [
           'type' => 'hide_revision_field_log_widget',
           'settings' => [
