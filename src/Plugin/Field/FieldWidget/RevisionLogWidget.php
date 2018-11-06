@@ -172,9 +172,27 @@ class RevisionLogWidget extends StringTextareaWidget implements ContainerFactory
     // Check for user level personalization.
     if ($settings['allow_user_settings'] && $this->user->hasPermission('administer revision field personalization')) {
       $form_object = $form_state->getFormObject();
-      if (method_exists($form_object, 'getEntity')) {
-        /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
+      /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
+
+      // Get entity from an inline entity form or a standard ContentEntityForm.
+      if (!empty($form['#type']) && $form['#type'] == 'inline_entity_form' && !empty($form['#entity'])) {
+        $entity = $form['#entity'];
+      }
+      elseif (!empty($form['#type']) && $form['#type'] == 'container') {
+        $complete_form = $form_state->getCompleteForm();
+        if (!empty($complete_form['widget']['inline_entity_form']['#entity'])) {
+          $entity = $complete_form['widget']['inline_entity_form']['#entity'];
+        }
+      }
+      elseif (method_exists($form_object, 'getEntity')) {
         $entity = $form_object->getEntity();
+      }
+
+      if (empty($form_state->get('langcode'))) {
+        $form_state->set('langcode', $entity->language()->getId());
+      }
+
+      if (isset($entity)) {
         $user_settings = unserialize(User::load($this->user->id())
           ->get('revision_log_settings')->value);
         if (isset($user_settings[$entity->getEntityType()
