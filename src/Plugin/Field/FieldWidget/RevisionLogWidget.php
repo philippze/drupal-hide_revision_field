@@ -161,12 +161,7 @@ class RevisionLogWidget extends StringTextareaWidget implements ContainerFactory
     $show = $settings['show'];
 
     if ($settings['permission_based']) {
-      if ($this->user->hasPermission('access revision field')) {
-        $show = TRUE;
-      }
-      else {
-        $show = FALSE;
-      }
+      $show = $this->user->hasPermission('access revision field');
     }
 
     // Check for user level personalization.
@@ -188,17 +183,16 @@ class RevisionLogWidget extends StringTextareaWidget implements ContainerFactory
         $entity = $form_object->getEntity();
       }
 
-      if (empty($form_state->get('langcode'))) {
-        $form_state->set('langcode', $entity->language()->getId());
-      }
-
       if (isset($entity)) {
+        if (empty($form_state->get('langcode'))) {
+          $form_state->set('langcode', $entity->language()->getId());
+        }
+        $entity_type_id = $entity->getEntityType()->id();
+        $bundle = $entity->bundle();
         $user_settings = unserialize(User::load($this->user->id())
           ->get('revision_log_settings')->value);
-        if (isset($user_settings[$entity->getEntityType()
-          ->id()][$entity->bundle()])) {
-          $show = $user_settings[$entity->getEntityType()
-            ->id()][$entity->bundle()];
+        if (isset($user_settings[$entity_type_id][$bundle])) {
+          $show = $user_settings[$entity_type_id][$bundle];
         }
       }
     }
